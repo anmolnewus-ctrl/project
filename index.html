@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 
-*{margin:0;padding:0;box-sizing:border-box}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 
 body{
     min-height:100vh;
@@ -178,7 +178,7 @@ body{
     left:50%;
     transform:translate(-50%,-50%);
     font-size:40px;
-    z-index:4;
+    z-index:6;
     transition:opacity 0.3s ease;
     pointer-events:none;
 }
@@ -186,33 +186,27 @@ body{
 /* Flap triangle */
 .env-flap{
     width:320px;
-    height:0;
-    border-left:160px solid transparent;
-    border-right:160px solid transparent;
-    border-top:140px solid #e91e8c;
+    height:140px;
+    background:linear-gradient(170deg,#ad1457,#e91e8c);
+    clip-path:polygon(0 0,100% 0,50% 100%);
     position:absolute;
     top:0;
     left:0;
     transform-origin:top center;
-    transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);
-    z-index:1;
-    filter:brightness(0.85);
+    transition:transform 0.65s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+    z-index:5;
     pointer-events:none;
 }
-
-/* Top V crease line */
 .env-flap::after{
     content:'';
     position:absolute;
-    top:-140px;
-    left:-160px;
-    width:320px;
-    height:140px;
-    background:linear-gradient(180deg,rgba(255,255,255,0.08),transparent);
+    inset:0;
+    background:linear-gradient(180deg,rgba(255,255,255,0.18),transparent 55%);
+    clip-path:polygon(0 0,100% 0,50% 100%);
 }
-
 .env-flap.open{
-    transform:rotateX(180deg);
+    transform:scaleY(0);
+    opacity:0;
 }
 
 .env-letter{
@@ -253,11 +247,13 @@ body{
 }
 
 .env-hint{
-    font-size:11px;
-    color:rgba(255,143,171,0.7);
-    letter-spacing:1.5px;
+    font-size:13px;
+    font-weight:600;
+    color:#e91e8c;
+    letter-spacing:2px;
     text-align:center;
     margin-top:12px;
+    text-shadow:0 0 10px rgba(233,30,140,0.7), 0 0 20px rgba(233,30,140,0.4);
     animation:pulse 2s ease-in-out infinite;
 }
 
@@ -756,6 +752,176 @@ button:active{transform:translateY(0)}
     transform:translateY(-50%) scale(1);
 }
 
+/* ── Meme envelope box ── */
+.env-box{
+    background:rgba(255,255,255,0.7);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border:1.5px solid rgba(233,30,140,0.2);
+    border-radius:20px;
+    padding:28px 20px 22px;
+    margin-top:32px;
+    text-align:center;
+}
+.env-box-title{
+    font-family:'Playfair Display',serif;
+    font-size:16px;
+    color:#e91e8c;
+    margin-bottom:20px;
+    letter-spacing:1px;
+}
+/* ── Meme envelope row ── */
+.env-row{
+    display:grid;
+    grid-template-columns:repeat(2,260px);
+    justify-content:center;
+    gap:24px;
+}
+.env-row .env-last{
+    grid-column:1/-1;
+    display:flex;
+    justify-content:center;
+}
+.env-mini{
+    position:relative;
+    width:260px;
+    cursor:pointer;
+    text-align:center;
+    flex-shrink:0;
+}
+.env-mini .env-body{
+    width:260px;
+    height:170px;
+    box-shadow:0 6px 20px rgba(233,30,140,0.35);
+}
+.env-mini .env-body::before{border-width:85px 0 0 130px}
+.env-mini .env-body::after{border-width:85px 130px 0 0}
+.env-mini .env-flap{
+    width:260px;
+    height:115px;
+    background:linear-gradient(170deg,#ad1457,#e91e8c);
+    clip-path:polygon(0 0,100% 0,50% 100%);
+    border:none;
+    z-index:5;
+}
+.env-mini .env-heart{font-size:42px;top:58%;z-index:6;}
+.env-mini .env-hint{font-size:12px;margin-top:12px}
+.env-mini.done{opacity:0.35;pointer-events:none;filter:grayscale(0.5)}
+/* Meme popup */
+.meme-popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.82);
+    z-index:9999;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:20px;
+    padding:20px;
+}
+.meme-popup.show{display:flex}
+.meme-env-anim{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+.meme-env-top{
+    width:280px;
+    height:120px;
+    background:linear-gradient(170deg,#880e4f,#c2185b);
+    clip-path:polygon(0 0,100% 0,50% 100%);
+    transform-origin:top center;
+    transition:transform 0.6s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+    z-index:2;
+    position:relative;
+}
+.meme-env-top.open{transform:scaleY(0);opacity:0}
+.meme-env-body-wrap{
+    width:280px;
+    height:200px;
+    background:linear-gradient(160deg,#e91e8c,#f06292);
+    border-radius:0 0 12px 12px;
+    position:relative;
+    overflow:hidden;
+    margin-top:-2px;
+}
+.meme-video{
+    position:absolute;
+    bottom:-110%;
+    left:50%;
+    transform:translateX(-50%);
+    width:260px;
+    border-radius:8px;
+    transition:bottom 0.8s cubic-bezier(0.22,1,0.36,1) 0.5s;
+    pointer-events:none;
+}
+.meme-video.risen{bottom:8px}
+.meme-msg{
+    font-family:'Playfair Display',serif;
+    font-size:22px;
+    color:#fff;
+    text-align:center;
+    text-shadow:0 2px 12px rgba(0,0,0,0.5);
+    animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+    max-width:320px;
+    min-height:32px;
+}
+.meme-close{
+    color:#fff;
+    font-size:11px;
+    letter-spacing:2px;
+    cursor:pointer;
+    padding:8px 26px;
+    border:1px solid rgba(255,255,255,0.3);
+    border-radius:20px;
+    background:rgba(233,30,140,0.45);
+    font-family:'Poppins',sans-serif;
+}
+#msgModal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.75);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+#msgModal.show{display:flex}
+.msg-card{
+    background:linear-gradient(160deg,#fff5f8,#ffe0ea);
+    border:1.5px solid rgba(255,143,171,0.5);
+    border-radius:20px;
+    padding:36px 32px;
+    max-width:360px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(233,30,140,0.35);
+    animation:fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) both;
+}
+.msg-card .env-title{
+    font-family:'Playfair Display',serif;
+    font-size:22px;
+    color:#e91e8c;
+    margin-bottom:14px;
+}
+.msg-card p{
+    font-size:14px;
+    color:#5a1a2a;
+    line-height:1.9;
+}
+.msg-card .mclose{
+    display:inline-block;
+    margin-top:20px;
+    color:#e91e8c;
+    font-size:11px;
+    letter-spacing:2px;
+    cursor:pointer;
+    padding:7px 22px;
+    border:1px solid rgba(233,30,140,0.35);
+    border-radius:20px;
+}
 /* ── Footer ── */
 .footer{
     text-align:center;
@@ -803,11 +969,8 @@ button:active{transform:translateY(0)}
     <div class="block">
         <div class="label pink">🎂 Thank You, Kashish</div>
         <p>
-            Today is my birthday, and out of all the wishes I received,
-            yours touched my heart the most. You have this beautiful way of making
-            people feel truly seen and loved. Thank you for being you, for remembering,
-            and for always showing up with so much warmth. Your words made my day
-            shine brighter than any candle on a cake ever could. 💖
+            Today is my birthday, and Thank you so much, Kashish 😊  
+            Your wish made my day brighter 💖
         </p>
     </div>
 
@@ -815,18 +978,11 @@ button:active{transform:translateY(0)}
     <div class="block green-tint">
         <div class="label green">🌿 Get Well Soon</div>
         <p>
-            I know these past days haven't been easy for you. Being unwell for a long time
-            takes a toll — not just on the body, but on the heart too. I want you to know
-            that you are not alone in this. Every single day, I think about you and send
-            you the warmest, most healing thoughts I can. 🌸
+            Wishing you a speedy recovery and lots of strength 😊
+            Every day is a step closer to recovery 🌈
         </p>
         <br>
-        <p>
-            Please be gentle with yourself. Rest when you need to. Eat well, sleep well,
-            and let the people who love you take care of you. You are strong, but you
-            don't always have to be. Healing takes time, and that's perfectly okay.
-            We are all waiting for you to come back feeling your best. 💚
-        </p>
+        
 
         <!-- Animated Flowers -->
         <div class="flower-row">
@@ -906,86 +1062,66 @@ button:active{transform:translateY(0)}
             <div class="gws-title">🌸 Get Well Soon, Kashish 🌸</div>
         </div>
 
-        <!-- Envelope -->
-        <div style="display:flex;justify-content:center;margin-top:28px">
-            <div class="envelope-wrap">
-                <div class="envelope" id="envelope" onclick="openEnvelope()">
-                    <div class="env-body">
-                        <span class="env-heart" id="envHeart">💖</span>
-                        <div class="env-flap" id="envFlap"></div>
-                        <div class="env-letter" id="envLetter">
-                            <div class="env-title">Get Well Soon 🌸</div>
-                            Rest, recover, and know that every single day I am sending you warmth, love, and healing energy. The world is brighter with you in it. 💖
-                        </div>
+        <!-- Envelope box -->
+        <div class="env-box">
+            <div class="env-box-title">💌 Open an envelope to reveal a surprise!</div>
+            <div class="env-row">
+                <div class="env-mini" id="menv0" onclick="openAnyEnv(0)">
+                    <div class="env-body"><span class="env-heart">🤍</span><div class="env-flap"></div></div>
+                    <div class="env-hint">✦ open ✦</div>
+                </div>
+                <div class="env-mini" id="menv1" onclick="openAnyEnv(1)">
+                    <div class="env-body"><span class="env-heart">🤍</span><div class="env-flap"></div></div>
+                    <div class="env-hint">✦ open ✦</div>
+                </div>
+                <div class="env-mini" id="menv2" onclick="openAnyEnv(2)">
+                    <div class="env-body"><span class="env-heart">🤍</span><div class="env-flap"></div></div>
+                    <div class="env-hint">✦ open ✦</div>
+                </div>
+                <div class="env-mini" id="menv3" onclick="openAnyEnv(3)">
+                    <div class="env-body"><span class="env-heart">🤍</span><div class="env-flap"></div></div>
+                    <div class="env-hint">✦ open ✦</div>
+                </div>
+                <div class="env-last">
+                    <div class="env-mini" id="menv4" onclick="openAnyEnv(4)">
+                        <div class="env-body"><span class="env-heart">🤍</span><div class="env-flap"></div></div>
+                        <div class="env-hint">✦ open ✦</div>
                     </div>
-                    <div class="env-hint" id="envHint">✦ click to open ✦</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 5. A Poem -->
-    <div class="block">
-        <div class="label purple">🖋️ A Little Poem for You</div>
-        <div class="poem">
-            <span>In the quiet of the night I pray,</span>
-            <span>that all your pain just fades away.</span>
-            <span>That every morning brings you light,</span>
-            <span>and fills your world with warmth so bright.</span>
-            <span>&nbsp;</span>
-            <span>You gave me joy on my special day,</span>
-            <span>now let me wish your clouds away.</span>
-            <span>Get well soon, dear Kashish, please —</span>
-            <span>the world needs your smile and your gentle breeze. 🌸</span>
-        </div>
-    </div>
+    <div style="text-align:center;margin:10px 0 20px;"><span style="font-family:'Playfair Display',serif;font-style:italic;font-size:16px;letter-spacing:1.5px;background:linear-gradient(135deg,#f06292,#e91e8c,#ad1457);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:recoverPulse 2.2s ease-in-out infinite;display:inline-block;filter:drop-shadow(0 0 8px rgba(233,30,140,0.5));">Your Recovery — Coming Soon 🌿</span></div>
+<style>@keyframes recoverPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px rgba(233,30,140,0.4))}50%{transform:scale(1.13);filter:drop-shadow(0 0 18px rgba(233,30,140,0.85))}}</style>
 
-    <!-- 6. Journey / Timeline -->
-    <div class="block">
-        <div class="label blue">🗓️ A Little Journey</div>
-        <div class="timeline">
-            <div class="tl-item">
-                <div class="tl-dot"></div>
-                <div class="tl-title">The Day We Connected</div>
-                <div class="tl-text">Some people walk into your life quietly and leave a permanent mark. That's exactly what you did.</div>
-            </div>
-            <div class="tl-item">
-                <div class="tl-dot"></div>
-                <div class="tl-title">My Birthday Today 🎂</div>
-                <div class="tl-text">You wished me with so much love. On a day that's mine, you still made it feel like a gift for me.</div>
-            </div>
-            <div class="tl-item">
-                <div class="tl-dot"></div>
-                <div class="tl-title">Your Recovery — Coming Soon 🌿</div>
-                <div class="tl-text">The next chapter is yours — full of health, happiness, and all the beautiful things you deserve.</div>
-            </div>
-        </div>
-    </div>
+    <div class="footer">Made Just for Kashish</div>
 
-    <!-- 7. Inspirational Quote -->
-    <div class="block">
-        <div class="label pink">💬 Something to Hold Onto</div>
-        <div class="quote">
-            "Healing is not linear. Some days will be harder than others.
-            But every single day you keep going is a victory worth celebrating."
-            <span class="quote-author">— A reminder, just for you</span>
-        </div>
-    </div>
+</div>
 
-    <!-- 8. Final Message -->
-    <div class="block">
-        <div class="label purple">💜 My Heart Says...</div>
-        <p>
-            Kashish, on my birthday, my biggest wish isn't for myself —
-            it's for you to get well, to laugh freely, and to feel loved every single day.<br><br>
-            You deserve all the good this world has to offer.
-            Thank you for being a light in my life. I'm here for you, always. 💜
+<!-- Message Modal -->
+<div id="msgModal">
+    <div class="msg-card">
+        <div class="env-title">Get Well Soon 🌸</div>
+        <p>You’re stronger than you think 💖  
+           Get well soon, brighter days are coming 🌞
+           माखा लाडली, जल्दी से ठीक हो जा 💙  
+           अभी मरीज भी ठीक करने हैं 😜 
         </p>
-        <div class="emoji-row">🎂 🌸 💜 🌿 ✨ 🌟</div>
+        <div class="mclose" onclick="document.getElementById('msgModal').classList.remove('show')">✦ close ✦</div>
     </div>
+</div>
 
-    <div class="footer">Made with 💜 — Just for Kashish</div>
-
+<!-- Meme Popup -->
+<div class="meme-popup" id="memePopup">
+    <div class="meme-env-anim">
+        <div class="meme-env-top" id="memeEnvTop"></div>
+        <div class="meme-env-body-wrap">
+            <video class="meme-video" id="memeVideo" autoplay playsinline loop></video>
+        </div>
+    </div>
+    <div class="meme-msg" id="memeMsg"></div>
+    <div class="meme-close" onclick="closeMemePopup()">✦ next ✦</div>
 </div>
 
 <script>
@@ -1159,6 +1295,78 @@ musicBtn.addEventListener("click", () => {
     if (playing) fadeOut()
     else fadeIn()
 })
+
+// ── Meme envelopes ──
+const _memes = [
+    "memes/78dfc32f.mp4",
+    "memes/Kya_Re_Bhikhmangaya_Meme_Download.mp4",
+    "memes/4141a625.mp4",
+    "memes/YouTube game stream - Made with Clipchamp (9)_lcV1iZR.mp4"
+]
+const _memeTexts = [
+    "Galat envelope! 😂",
+    "Abhi bhi galat hai! 😜",
+    "Haa haa haa haa! 🤣",
+    "Sorry yeh last tha... 🙏"
+]
+function _shuffle(arr){ for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]} }
+
+const _totalEnv = 5
+let _opened = 0
+let _memeQueue = [0,1,2,3]
+_shuffle(_memeQueue)
+let _memeQueueIdx = 0
+
+function openAnyEnv(idx){
+    const el = document.getElementById("menv"+idx)
+    if(!el || el.dataset.opened) return
+    el.dataset.opened = "1"
+    el.querySelector(".env-flap").style.transition = "transform 0.65s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease"
+    el.querySelector(".env-flap").style.transform = "scaleY(0)"
+    el.querySelector(".env-flap").style.opacity = "0"
+    _opened++
+    setTimeout(()=>{ el.classList.add("done") }, 400)
+    if(_opened === _totalEnv){
+        setTimeout(_showMessage, 500)
+    } else {
+        const memeIdx = _memeQueue[_memeQueueIdx++]
+        const msg = (_opened === _totalEnv - 1)
+            ? "Ek aur bacha hai... 🤔"
+            : _memeTexts[_memeQueueIdx - 1] || "Galat envelope! 😂"
+        setTimeout(()=>{ _showMeme(_memes[memeIdx], msg) }, 300)
+    }
+}
+
+function _showMeme(src, msg){
+    const vid = document.getElementById("memeVideo")
+    const top = document.getElementById("memeEnvTop")
+    const msgEl = document.getElementById("memeMsg")
+    vid.classList.remove("risen")
+    top.classList.remove("open")
+    msgEl.textContent = ""
+    vid.src = src
+    vid.load()
+    document.getElementById("memePopup").classList.add("show")
+    setTimeout(()=>{ top.classList.add("open") }, 100)
+    setTimeout(()=>{ vid.play().catch(()=>{}); vid.classList.add("risen") }, 700)
+    setTimeout(()=>{ msgEl.textContent = msg }, 1400)
+}
+
+function closeMemePopup(){
+    const vid = document.getElementById("memeVideo")
+    vid.pause(); vid.src = ""
+    document.getElementById("memePopup").classList.remove("show")
+    document.getElementById("memeEnvTop").classList.remove("open")
+    vid.classList.remove("risen")
+}
+
+function _showMessage(){
+    setTimeout(()=>{
+        document.getElementById("msgModal").classList.add("show")
+        launchConfetti()
+        fadeIn()
+    }, 400)
+}
 
 function openEnvelope(){
     const el = document.getElementById("envelope")
