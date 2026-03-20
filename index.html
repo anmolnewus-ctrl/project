@@ -1344,12 +1344,14 @@ function _showMeme(src, msg){
     vid.classList.remove("risen")
     top.classList.remove("open")
     msgEl.textContent = ""
+    vid.loop = false
     vid.src = src
     vid.load()
     document.getElementById("memePopup").classList.add("show")
     setTimeout(()=>{ top.classList.add("open") }, 100)
     setTimeout(()=>{ vid.play().catch(()=>{}); vid.classList.add("risen") }, 700)
     setTimeout(()=>{ msgEl.textContent = msg }, 1400)
+    vid.onended = () => { setTimeout(closeMemePopup, 800) }
 }
 
 function closeMemePopup(){
